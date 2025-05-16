@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Counter</string>
+    <string name="counter">COUNTER</string>
+    <string name="minus">\u2212</string>
+    <string name="plus">\u002B</string>
+    <string name="reset">RESET</string>
+</resources>
