@@ -29,7 +29,7 @@ fun CounterView(resources: Resources, innerPadding: PaddingValues) {
     val plusClick = { if (count < 9999) count++ }
     val minusClick = { if (count > 0) count-- }
     val resetClick = { count = 0 }
-
+    KeepScreenOn()
     BoxWithConstraints {
         if (maxWidth < 600.dp) {
             Column(
