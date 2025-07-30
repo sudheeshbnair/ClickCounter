@@ -1,6 +1,5 @@
 package com.sb.clickcounter.ui.view
 
-import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,17 +19,30 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CounterView(resources: Resources, innerPadding: PaddingValues) {
+fun CounterView(
+    innerPadding: PaddingValues,
+) {
+    CounterViewUi(innerPadding)
+}
+
+@Composable
+fun CounterViewUi(
+    innerPadding: PaddingValues,
+) {
     var count by rememberSaveable { mutableIntStateOf(0) }
 
     val plusClick = { if (count < 9999) count++ }
     val minusClick = { if (count > 0) count-- }
     val resetClick = { count = 0 }
+
     KeepScreenOn()
+
     BoxWithConstraints {
         if (maxWidth < 600.dp) {
             Column(
@@ -41,7 +54,7 @@ fun CounterView(resources: Resources, innerPadding: PaddingValues) {
                 Spacer(Modifier.fillMaxHeight(0.2f))
                 CountText(count)
                 Spacer(Modifier.fillMaxHeight(0.3f))
-                ControlView(resources, plusClick, minusClick, resetClick)
+                ControlView(plusClick, minusClick, resetClick)
             }
         } else {
             Row(
@@ -63,10 +76,21 @@ fun CounterView(resources: Resources, innerPadding: PaddingValues) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    ControlView(resources, plusClick, minusClick, resetClick)
+                    ControlView(plusClick, minusClick, resetClick)
                 }
 
             }
         }
+    }
+}
+
+
+@Preview(name = "PIXEL_7A", device = Devices.PIXEL_7A, showBackground = true, showSystemUi = true)
+@Composable
+fun CounterViewPreview() {
+    Scaffold { innerPadding ->
+        CounterViewUi(
+            innerPadding = innerPadding,
+        )
     }
 }
