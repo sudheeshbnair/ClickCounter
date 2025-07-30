@@ -4,4 +4,5 @@
     <string name="minus">\u2212</string>
     <string name="plus">\u002B</string>
     <string name="reset">RESET</string>
+    <string name="settings">SETTINGS</string>
 </resources>
