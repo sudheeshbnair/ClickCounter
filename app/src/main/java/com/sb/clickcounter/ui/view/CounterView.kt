@@ -95,7 +95,7 @@ fun CounterViewUi(
         }
  // Blocking snackbar
 
-//        AppSnackbar(snackbarHostState) { snackbarHostState.currentSnackbarData?.dismiss() }.also {
+//        AppSnackbar(snackbarHostState).also {
 //            val coroutineScope = rememberCoroutineScope()
 //            LaunchedEffect(activeSnackbar) {
 //                coroutineScope.launch {

@@ -14,9 +14,9 @@ import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppSnackbar(snackbarHostState: SnackbarHostState, onDismissRequest: () -> Unit) {
+fun AppSnackbar(snackbarHostState: SnackbarHostState) {
     BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = {},
         modifier = Modifier.fillMaxSize(),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         content = {
