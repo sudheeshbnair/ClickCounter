@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -68,7 +70,7 @@ fun SettingsView(
         ) {
             // Handle click
         }
-        AnimatedHintSearchTextField(
+        AnimatedHintSearchTextFieldNew(
             hints = listOf( "\"Cars\"", "\"Properties\"", "\"Mobiles\"", "\"Bikes\"", "\"Jobs\""),
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
@@ -300,5 +302,100 @@ fun AnimatedHintSearchTextField(
                 Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray)
             }
         )
+    }
+}
+
+@Composable
+fun AnimatedHintSearchTextFieldNew(
+    hints: List<String>,
+    prefix: String = "Search ",
+    displayDuration: Long = 2000L,
+    blankDuration: Long = 500L,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    var currentHintIndex by remember { mutableIntStateOf(0) }
+    var showHint by remember { mutableStateOf(true) }
+    var text by remember { mutableStateOf("") }
+
+
+    LaunchedEffect(currentHintIndex) {
+        delay(displayDuration)
+        showHint = false  // Exit hint
+        delay(blankDuration)
+        currentHintIndex = (currentHintIndex + 1) % hints.size
+        showHint = true   // Show new hint
+    }
+
+    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxWidth()) {
+        TextField(
+            value = text,
+            onValueChange = { text = it },
+            modifier = Modifier
+                .fillMaxWidth().height(55.dp)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    clip = false // don't clip the shadow
+                )
+                .background(color = Color(0xFFF2F2F2), shape = RoundedCornerShape(25.dp)),
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            leadingIcon = {
+                Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray)
+            }
+        )
+
+        if (text.isEmpty()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier.fillMaxWidth().padding(start = 40.dp)
+            ) {
+                Text(
+                    text = prefix,
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                )
+
+                AnimatedContent(
+                    targetState = showHint to currentHintIndex,
+                    transitionSpec = {
+                        val slideIn = slideInVertically(
+                            animationSpec = tween(durationMillis = 600), // Slow enter
+                            initialOffsetY = { it } // from bottom
+                        )
+
+                        val slideOut = slideOutVertically(
+                            animationSpec = tween(durationMillis = 600),
+                            targetOffsetY = { -it } // to top
+                        )
+                        slideIn togetherWith slideOut
+                    },
+                    label = "Hint Transition"
+                ) { (isVisible, index) ->
+                    var colour = Color.Transparent
+                    if (isVisible) {
+                        colour = Color.Gray
+                    }
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.height(50.dp)) {
+                        Text(
+                            text = hints[index],
+                            color = colour,
+                            fontSize = 16.sp,
+                        )
+                    }
+
+                }
+            }
+        }
     }
 }
