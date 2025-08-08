@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,13 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.sb.clickcounter.R
 import com.sb.clickcounter.model.DialogData
 import com.sb.clickcounter.navigation.Screen
 import com.sb.clickcounter.ui.state.DialogState
 import com.sb.clickcounter.ui.state.SnackbarState
 import com.sb.clickcounter.ui.state.UiState
+import com.sb.clickcounter.viewmodel.BottomSheetItem
 import com.sb.clickcounter.viewmodel.CounterViewModel
 import com.sb.clickcounter.viewmodel.CounterViewModelContract
+import com.swoozle.xchange.ui.view.DialogHostState
+import com.swoozle.xchange.ui.view.DialogResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,23 +61,55 @@ fun CounterView(
     snackbarHostState: SnackbarHostState
 ) {
     val counterViewModel: CounterViewModel = hiltViewModel()
-    CounterViewUi(innerPadding, navController, counterViewModel, counterViewModel.uiState, snackbarHostState)
+    CounterViewUi(innerPadding, navController, counterViewModel, counterViewModel.uiState, snackbarHostState, counterViewModel.dataItems, counterViewModel.dialogHostState)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CounterViewUi(
     innerPadding: PaddingValues,
     navController: NavHostController,
     counterViewModelContract: CounterViewModelContract,
     uiState: StateFlow<UiState>,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    dataItems: List<BottomSheetItem>,
+    dialogHostState: DialogHostState
 ) {
     var count by rememberSaveable { mutableIntStateOf(0) }
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    val coroutineScope = rememberCoroutineScope()
+
 
     val plusClick = {
         if (count < 9999) count++
         // counterViewModelContract.showLoginDialog()
-        counterViewModelContract.showNoNetworkSnackbar()
+        // counterViewModelContract.showNoNetworkSnackbar()
+//        coroutineScope.launch {
+//            sheetState.show()
+//        }
+//        Unit
+//        coroutineScope.launch {
+//
+//        }
+        dialogHostState.launch {
+            val result = dialogHostState.showDialog(
+                title = "hi",
+                positiveButton = "OK",
+                negativeButton = "Cancel",
+                message = "Success",
+                icon = R.drawable.ic_launcher_foreground
+            )
+            when (result) {
+                DialogResult.Negative -> {
+                    println("Negative clicked")
+                }
+
+                DialogResult.Positive -> {
+                    println("Positive clicked")
+                }
+            }
+        }
     }
     val minusClick = {
         if (count > 0) count--
@@ -109,7 +148,6 @@ fun CounterViewUi(
 //            }
 //        }
 
-        val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(activeSnackbar) {
             coroutineScope.launch {
                 Log.d("SUDHEESH", "show snackbar $message")
@@ -153,6 +191,14 @@ fun CounterViewUi(
             }
         }
         AppDialog(dialogData, onConfirmRequest, onDismissRequest)
+    }
+
+    AppDialog(dialogHostState)
+
+    val isVisible = sheetState.currentValue != SheetValue.Hidden
+
+    if (isVisible) {
+        AppBottomSheet(dataItems, sheetState) { }
     }
 
     BoxWithConstraints {
@@ -204,6 +250,11 @@ fun CounterViewPreview() {
     val testUiState = MutableStateFlow(UiState())
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val dataItems = List(2) { index -> BottomSheetItem(
+        id = index,
+        title = "Item $index"
+    ) }
+
     Scaffold { innerPadding ->
         CounterViewUi(
             innerPadding = innerPadding,
@@ -218,7 +269,9 @@ fun CounterViewPreview() {
                 override fun showSessionTimeoutSnackbar() {}
             },
             uiState = testUiState.asStateFlow(),
-            snackbarHostState = snackbarHostState
+            snackbarHostState = snackbarHostState,
+            dataItems = dataItems,
+            dialogHostState = DialogHostState(rememberCoroutineScope())
         )
     }
 }

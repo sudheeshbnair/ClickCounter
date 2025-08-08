@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.sb.clickcounter.model.DialogData
+import com.swoozle.xchange.ui.view.DialogHostState
 
 @Composable
 fun AppDialog(dialogData: DialogData, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit) {
@@ -26,4 +27,25 @@ fun AppDialog(dialogData: DialogData, onConfirmRequest: () -> Unit, onDismissReq
             }
         }
     )
+}
+
+@Composable
+fun AppDialog(dialogHostState: DialogHostState) {
+    dialogHostState.currentDialogData.value?.visuals?.let {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text(it.title)},
+            text = { Text(it.message) },
+            confirmButton = {
+                TextButton(onClick = {dialogHostState.currentDialogData.value?.onPositive()}) {
+                    Text(it.positiveButton)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {dialogHostState.currentDialogData.value?.onNegative()}) {
+                    Text(it.negativeButton)
+                }
+            }
+        )
+    }
 }
