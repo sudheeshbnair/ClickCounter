@@ -1,4 +1,4 @@
-package com.swoozle.xchange.ui.view
+package com.sb.clickcounter.ui.state
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State

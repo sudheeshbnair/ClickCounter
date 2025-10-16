@@ -47,8 +47,8 @@ import com.sb.clickcounter.ui.state.UiState
 import com.sb.clickcounter.viewmodel.BottomSheetItem
 import com.sb.clickcounter.viewmodel.CounterViewModel
 import com.sb.clickcounter.viewmodel.CounterViewModelContract
-import com.swoozle.xchange.ui.view.DialogHostState
-import com.swoozle.xchange.ui.view.DialogResult
+import com.sb.clickcounter.ui.state.DialogHostState
+import com.sb.clickcounter.ui.state.DialogResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -7,13 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.sb.clickcounter.ui.state.DialogState
 import com.sb.clickcounter.ui.state.SnackbarState
 import com.sb.clickcounter.ui.state.UiState
-import com.swoozle.xchange.ui.view.DialogHostState
+import com.sb.clickcounter.ui.state.DialogHostState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

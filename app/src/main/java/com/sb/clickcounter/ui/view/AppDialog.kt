@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.sb.clickcounter.model.DialogData
-import com.swoozle.xchange.ui.view.DialogHostState
+import com.sb.clickcounter.ui.state.DialogHostState
 
 @Composable
 fun AppDialog(dialogData: DialogData, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit) {
